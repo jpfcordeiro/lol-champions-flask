@@ -1,0 +1,31 @@
+<div class="card" style="width: 24rem;">
+  <img src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/{{ champion.id }}_0.jpg" class="card-img-top" alt="{{ champion.name }} splash art">
+  
+  <div class="card-body">
+    <h3 class="card-title">{{ champion.name }} ({{ champion.title }})</h3>
+    <p class="card-text">{{ champion.lore }}</p>
+
+    <h4>Passiva</h4>
+    <p><strong>{{ champion.passive.name }}</strong>: {{ champion.passive.description }}</p>
+    <img src="https://ddragon.leagueoflegends.com/cdn/14.4.1/img/passive/{{ champion.passive.image.full }}" alt="Passiva de {{ champion.name }}">
+
+    <h4>Habilidades</h4>
+    <ul>
+      {% for spell in champion.spells %}
+        <li>
+          <strong>{{ spell.name }}</strong>: {{ spell.description }} <br>
+          <img src="https://ddragon.leagueoflegends.com/cdn/14.4.1/img/spell/{{ spell.image.full }}" alt="Habilidade {{ spell.name }}">
+        </li>
+      {% endfor %}
+    </ul>
+
+    <h4>Estatísticas</h4>
+    <ul>
+      <li>HP: {{ champion.stats.hp }} (Crescimento: {{ champion.stats.hpperlevel }})</li>
+      <li>Ataque: {{ champion.stats.attackdamage }}</li>
+      <li>Velocidade de Movimento: {{ champion.stats.movespeed }}</li>
+      <li>Armadura: {{ champion.stats.armor }}</li>
+      <li>Resistência Mágica: {{ champion.stats.spellblock }}</li>
+    </ul>
+  </div>
+</div>

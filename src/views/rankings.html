@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Adicionar Campeão ao Ranking</h1>
+<form action="{{url_for('show_rankings')}}" method="POST">
+    <label>Nome do Campeão:</label>
+    <input type="text" name="champion" placeholder="Ex: Ahri, Yasuo" required>
+
+    <label>Winrate (%):</label>
+    <input type="number" step="0.1" name="winrate" placeholder="Ex: 52.3" required>
+
+    <label>Pickrate (%):</label>
+    <input type="number" step="0.1" name="pickrate" placeholder="Ex: 7.4" required>
+
+    <label>Banrate (%):</label>
+    <input type="number" step="0.1" name="banrate" placeholder="Ex: 2.1" required>
+
+    <button type="submit">Adicionar</button>
+</form>
+
+<h1>Ranking de Campeões</h1>
+<table border="1">
+    <tr>
+        <th>Campeão</th>
+        <th>Winrate (%)</th>
+        <th>Pickrate (%)</th>
+        <th>Banrate (%)</th>
+    </tr>
+    {% for champion, stats in rankings.items() %}
+    <tr>
+        <td><strong>{{ champion }}</strong></td>
+        <td>{{ stats.winrate }}%</td>
+        <td>{{ stats.pickrate }}%</td>
+        <td>{{ stats.banrate }}%</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

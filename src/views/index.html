@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center mt-5">
+  <h1>Bem-vindo ao JoãoTech!</h1>
+  <p class="lead">Explore informações detalhadas sobre os campeões de League of Legends.</p>
+
+  <div class="mt-4">
+    <a href="{{ url_for('list_champion') }}" class="btn btn-primary btn-lg">Explorar Campeões</a>
+    <a href="{{ url_for('show_rankings') }}" class="btn btn-secondary btn-lg">Acessar Rankings</a>
+    <a href="{{ url_for('show_builds') }}" class="btn btn-secondary btn-lg">Acessar Builds</a>
+  </div>
+
+  <div class="mt-5">
+    <img src="{{ url_for('static', filename='images/main.png') }}" alt="League of Legends"
+      class="img-fluid rounded shadow">
+  </div>
+</div>
+{% endblock %}

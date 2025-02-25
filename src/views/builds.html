@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<form method="POST">
+    <input type="text" name="champion" placeholder="Nome do Campeão" required>
+    
+    <label>Runas:</label>
+    <input type="text" name="runes" placeholder="Separe por vírgula (ex: Electrocutar, Gosto de Sangue)" required>
+    
+    <label>Itens:</label>
+    <input type="text" name="items" placeholder="Separe por vírgula (ex: Eco de Luden, Ampulheta de Zhonya)" required>
+    
+    <button type="submit">Adicionar Build</button>
+</form>
+
+<h1>Lista de Builds</h1>
+<ul>
+    {% for build in builds %}
+        <li>
+            <strong>{{ build.champion }}</strong><br>
+            🏹 <strong>Runas:</strong> {{ build.runes | join(", ") }}<br>
+            🛡️ <strong>Itens:</strong> {{ build.items | join(", ") }}
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
