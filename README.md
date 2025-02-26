@@ -15,6 +15,7 @@ A API utiliza **Flask** para criação das rotas, **JSON** para manipulação do
 
 ## To Do
 
+- [ ] Adicionar as rotas de itens e modos de jogo na navbar e no Index
 - [ ] Arrumar as labels dos botões no Index 
 - [ ] Hover em cada Card no Index
 - [ ] Arrumar rota das Builds (Problema para inserir)
