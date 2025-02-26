@@ -1,19 +1,64 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
+<div class="text-center mt-2">
+  <h1>Bem-vindo ao JOAOTECH</h1>
+  <p class="lead mt-4">
+    Explore informações detalhadas sobre os campeões de
+    <img
+      src="{{ url_for('static', filename='images/main.png') }}"
+      alt="League of Legends"
+      width="200px"
+      class="img-fluid"
+    />
+  </p>
 
-{% block content %}
-<div class="text-center mt-5">
-  <h1>Bem-vindo ao JoãoTech!</h1>
-  <p class="lead">Explore informações detalhadas sobre os campeões de League of Legends.</p>
-
-  <div class="mt-4">
-    <a href="{{ url_for('list_champion') }}" class="btn btn-primary btn-lg">Explorar Campeões</a>
-    <a href="{{ url_for('show_rankings') }}" class="btn btn-secondary btn-lg">Acessar Rankings</a>
-    <a href="{{ url_for('show_builds') }}" class="btn btn-secondary btn-lg">Acessar Builds</a>
+  <div class="mt-5 d-flex flex-row justify-content-around">
+    <div class="card bg-dark text-white hovercard" style="width: 220px">
+      <img
+        src="{{ url_for('static', filename='images/champions_gif.gif') }}"
+        class="card-img"
+        alt="Champions GIF"
+        style="object-fit: cover; height: 100%; width: 100%"
+      />
+      <div
+        class="card-img-overlay d-flex align-items-end justify-content-center"
+      >
+        <a href="{{ url_for('list_champion') }}" 
+          >EXPLORAR CAMPEÕES</a
+        >
+      </div>
+    </div>
+    <div class="card bg-dark text-white" style="width: 220px">
+      <img
+        src="{{ url_for('static', filename='images/ranking.png') }}"
+        class="card-img"
+        alt="Champions GIF"
+        style="object-fit: cover; height: 100%; width: 100%"
+      />
+      <div
+        class="card-img-overlay d-flex align-items-end justify-content-center"
+      >
+        <a
+          href="{{ url_for('show_rankings') }}"
+          class="btn btn-secondary btn-lg"
+          >ACESSAR RANKINGS</a
+        >
+      </div>
+    </div>
+    <div class="card bg-dark text-white" style="width: 220px">
+      <img
+        src="{{ url_for('static', filename='images/runes.png') }}"
+        class="card-img"
+        alt="Champions GIF"
+        style="object-fit: cover; height: 100%; width: 100%"
+      />
+      <div
+        class="card-img-overlay d-flex align-items-end justify-content-center"
+      >
+        <a href="{{ url_for('show_builds') }}" class="btn btn-secondary btn-lg"
+          >ACESSAR BUILDS</a
+        >
+      </div>
+    </div>
   </div>
-
-  <div class="mt-5">
-    <img src="{{ url_for('static', filename='images/main.png') }}" alt="League of Legends"
-      class="img-fluid rounded shadow">
-  </div>
+  {% endblock %}
 </div>
-{% endblock %}

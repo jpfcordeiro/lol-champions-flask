@@ -19,7 +19,7 @@ def init_app(app):
     def show_rankings():
         if request.method == 'POST':
             form_data = request.form.to_dict()
-            rankings.append(form_data)
+            rankings.update(form_data)
             return redirect(url_for('show_rankings'))
         return render_template('rankings.html', rankings=rankings)
     
@@ -40,8 +40,8 @@ def init_app(app):
         return render_template('builds.html', builds=builds)
     
     @app.route('/champions', methods=['GET', 'POST'])
-    @app.route('/champions/<name>', methods=['GET', 'POST'])
-    def list_champion(name=None):
+    @app.route('/champions/<id>', methods=['GET', 'POST'])
+    def list_champion(id=None):
         url_patch = 'https://ddragon.leagueoflegends.com/api/versions.json'
         response = urllib.request.urlopen(url_patch)
         versions = json.loads(response.read())
@@ -53,19 +53,20 @@ def init_app(app):
         else:
             data = []
             
-        if name:
+        if id:
             champ_id = None
             for champ in data.values():
-                if champ['name'].lower() == name.lower():
-                    champ_id = champ["id"] 
+                if champ['name'].lower() == id.lower():
+                    champ_id = champ["id"]
                     break
 
             if champ_id:
                 champinfo_url = f'https://ddragon.leagueoflegends.com/cdn/{latest_version}/data/pt_BR/champion/{champ_id}.json'
                 response = urllib.request.urlopen(champinfo_url)
-                champ_data = json.loads(response.read())['data']
+                print(champinfo_url)
+                champ_data = json.loads(response.read())['data'][champ_id]
                 return render_template('championsinfo.html', champion=champ_data)
             else:
-                return 'Campeão não encontrado!'
+                return 'Campeão não encontrado!', 404
         return render_template('champions.html', champions=data)
 
