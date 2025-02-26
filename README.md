@@ -38,6 +38,8 @@ A API utiliza **Flask** para criação das rotas, **JSON** para manipulação do
 - [ ] Finalizar a página que mostra os modos de jogo existentes
 - [ ] Construir a página de itens
 - [ ] Ajustar a página de info do campeão, troquei a url do json, agora retorna as skins
+- [ ] Tentar utilizar o visual do Client para navegação
+- [ ] Mudar o visual do mouse ao passar sobre links e outras ações
 
 ## New Features
 - Listagem dos modos de Jogos Existentes
