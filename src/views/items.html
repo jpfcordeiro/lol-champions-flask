@@ -1,5 +1,14 @@
-{% extends "base.html"}
-{%block content%}
-{# url item image = https://ddragon.leagueoflegends.com/cdn/VERSAO/img/item/ID_DO_ITEM.png #}
-<div></div>
-{%endblock%}
+{% extends "base.html" %} {% block content %}
+<div class="items-container" style="display: flex; flex-wrap: wrap">
+  {% for item in items.values() %}
+  <div class="item" style="display: flex; align-items: center; margin: 10px">
+    <img
+      src="https://ddragon.leagueoflegends.com/cdn/{{ latest_version }}/img/item/{{ item.image.full}}"
+      alt="{{ item.name }}"
+      style="margin-right: 10px"
+    />
+    <p>{{ item.name }}</p>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

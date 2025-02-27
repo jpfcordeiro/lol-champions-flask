@@ -1,18 +1,88 @@
 @font-face {
-    font-family: 'leaguefont';
-    src: url('/static/fonts/BeaufortforLOL-Bold.ttf') format('truetype');
+  font-family: "leaguefont";
+  src: url("/static/fonts/BeaufortforLOL-Bold.ttf") format("truetype");
 }
 
 * {
-    font-family: 'leaguefont', sans-serif;
-    cursor: url('/static/images/cursor.cur'), auto;
+  font-family: "leaguefont", sans-serif;
+  cursor: url("/static/images/cursor.cur"), auto;
 }
 
+.hovercard:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.card-img {
+  transition: filter 0.3s ease;
+}
+
+.hovercard:hover .card-img {
+  filter: brightness(0.5);
+}
+
+
+.card-img-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  color: #c89b3c;
+}
+
+.hovercard:hover .card-img-overlay {
+  opacity: 1;
+  transform: translateY(40%);
+  filter: brightness(1); 
+}
 
 .champcard:hover {
-    background-color: #f9f9f9;
-    transform: scale(1.05);
-    transition: transform 0.3s ease;
-    cursor: pointer;
+  background-color: #f9f9f9;
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+  cursor: pointer;
 }
 
+.navbar a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  height: 100%;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  border-radius: 5px;
+}
+
+.navbar a:hover {
+  color: black;
+}
+
+.navbar a.active {
+  color: white;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.custom-table {
+  background-color: #1E2328;
+  color: #C8AA6E;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.custom-table td, .custom-table th {
+  padding: 10px;
+  border: 1px solid #C8AA6E;
+}
+
+.custom-table th {
+  color: #C89B3C;
+}
+
+.form-label{
+  color: #C89B3C;
+}

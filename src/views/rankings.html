@@ -1,39 +1,114 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %} {% block content %}
+<div class="container mt-4">
+  <div
+    class="bg-image"
+    style="background-image: url('{{ url_for('static', filename='images/ranking_background.jpg') }}'); background-size: cover; background-position: center; opacity: 0.9; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: brightness(0.4) blur(7px);" 
+  ></div>
+  <h3 class="text-center mb-4" style="color: #C89B3C;">Adicionar ao Ranking</h3>
 
-<h1>Adicionar Campeão ao Ranking</h1>
-<form action="{{url_for('show_rankings')}}" method="POST">
-    <label>Nome do Campeão:</label>
-    <input type="text" name="champion" placeholder="Ex: Ahri, Yasuo" required>
+  <form
+    action="{{ url_for('show_rankings') }}"
+    method="POST"
+    class="d-flex flex-wrap justify-content-start gap-3"
+  >
+    <div class="mb-3">
+      <label for="champion" class="form-label">Campeão:</label>
+      <select
+        name="champion"
+        id="champion"
+        class="form-select form-select-sm"
+        required
+      >
+        {% for champion in champions %}
+        <option value="{{ champion }}">{{ champion }}</option>
+        {% endfor %}
+      </select>
+    </div>
 
-    <label>Winrate (%):</label>
-    <input type="number" step="0.1" name="winrate" placeholder="Ex: 52.3" required>
+    <div class="mb-3">
+      <label for="winrate" class="form-label">Winrate (%):</label>
+      <input
+        type="number"
+        step="0.1"
+        name="winrate"
+        id="winrate"
+        placeholder="Ex: 52.3"
+        class="form-control form-control-sm"
+        required
+      />
+    </div>
 
-    <label>Pickrate (%):</label>
-    <input type="number" step="0.1" name="pickrate" placeholder="Ex: 7.4" required>
+    <div class="mb-3">
+      <label for="pickrate" class="form-label">Pickrate (%):</label>
+      <input
+        type="number"
+        step="0.1"
+        name="pickrate"
+        id="pickrate"
+        placeholder="Ex: 7.4"
+        class="form-control form-control-sm"
+        required
+      />
+    </div>
 
-    <label>Banrate (%):</label>
-    <input type="number" step="0.1" name="banrate" placeholder="Ex: 2.1" required>
+    <div class="mb-3">
+      <label for="banrate" class="form-label">Banrate (%):</label>
+      <input
+        type="number"
+        step="0.1"
+        name="banrate"
+        id="banrate"
+        placeholder="Ex: 2.1"
+        class="form-control form-control-sm"
+        required
+      />
+    </div>
 
-    <button type="submit">Adicionar</button>
-</form>
+    <div class="justify-content-center align-items-center" style="height: 100%;"></div>
+      <button
+        type="submit"
+        class="btn rounded mt-3"
+        style="background-color: #785A28; color: #fff; height: 50px;"
+      >
+        Adicionar Campeão
+      </button>
+    </div>
+  </form>
 
-<h1>Ranking de Campeões</h1>
-<table border="1">
-    <tr>
-        <th>Campeão</th>
-        <th>Winrate (%)</th>
-        <th>Pickrate (%)</th>
-        <th>Banrate (%)</th>
-    </tr>
-    {% for champion, stats in rankings.items() %}
-    <tr>
-        <td><strong>{{ champion }}</strong></td>
-        <td>{{ stats.winrate }}%</td>
-        <td>{{ stats.pickrate }}%</td>
-        <td>{{ stats.banrate }}%</td>
-    </tr>
-    {% endfor %}
-</table>
+  <h3 class="text-center mt-2" style="color: #C89B3C;">Ranking de Campeões</h3>
 
+<div class="table-responsive mt-4" ></div>
+    <div style="max-height: 250px; overflow-y: auto;">
+      <table class="custom-table">
+        <thead class="thead">
+          <tr>
+            <th>Campeão</th>
+            <th>Winrate (%)</th>
+            <th>Pickrate (%)</th>
+            <th>Banrate (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for champion, stats in rankings.items() %}
+          <tr>
+            <td>
+              {% if champion in champions %}
+              <img
+                src="{{ champions[champion].image_url }}"
+                alt="{{ champion }}"
+                style="width: 30px; height: 30px; object-fit: cover"
+              />
+              {% else %}
+              <span>Imagem não encontrada</span>
+              {% endif %}<strong>{{ champion }}</strong>
+            </td>
+            <td>{{ stats.winrate }}%</td>
+            <td>{{ stats.pickrate }}%</td>
+            <td>{{ stats.banrate }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+</div>
 {% endblock %}
