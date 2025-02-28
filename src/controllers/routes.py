@@ -9,6 +9,19 @@ rankings = {
 
 builds = []
 
+roles = {
+    'assassin': 'Assassino', 'fighter': 'Lutador', 'mage': 'Mago', 'marksman': 'Atirador', 'support': 'Suporte', 'tank': 'Tanque'
+}
+
+partypes = {
+    'coragem': 'Coragem', 'furia': 'Fúria',
+    'mana': 'Mana', 'energia': 'Energia',
+    'deaquecimento': 'Aquecimento', 'nenhum': 'Nenhum',
+    'escudo': 'Escudo', 'ferocidade': 'Ferocidade',
+    'fluxo': 'Fluxo', 'impetovermelho': 'Ímpeto Vermelho',
+    'ousadia': 'Ousadia', 'pocodesangue': 'Poço de Sangue',
+}
+
 game_modes_translation = {
     "CLASSIC": "Modo Clássico (Summoner's Rift e Twisted Treeline)",
     "ODIN": "Domínio/Cristal Escarlate",
@@ -48,6 +61,10 @@ if latest_version:
     for champ_key, champ_info in champion_data.items():
         champ_info['image_url'] = f'https://ddragon.leagueoflegends.com/cdn/{latest_version}/img/champion/{champ_info["image"]["full"]}'
         data[champ_key] = champ_info
+        
+    items_url = f"https://ddragon.leagueoflegends.com/cdn/{latest_version}/data/pt_BR/item.json"
+    response = urllib.request.urlopen(items_url)
+    items_data = json.loads(response.read())["data"]
 
 
 
@@ -97,31 +114,47 @@ def init_app(app):
 
     @app.route('/builds', methods=['GET', 'POST'])
     def show_builds():
+        if latest_version:
+            url_runas = f'https://ddragon.leagueoflegends.com/cdn/{latest_version}/data/pt_BR/runesReforged.json'
+            response = urllib.request.urlopen(url_runas)
+            runas_data = json.loads(response.read())
+            
+            items_filtered = [
+                item for item in items_data.values() if item.get("depth") == 3
+            ]
+            
+            items_sorted = sorted(items_filtered, key=lambda item: item["name"])
+            seen = set()
+            items_unique = []
+
+            for item in items_sorted:
+                if item["name"] not in seen:
+                    items_unique.append(item)
+                    seen.add(item["name"])
+
+            
         if request.method == 'POST':
             champion = request.form.get('champion')
-            runes = [r.strip()
-                     for r in request.form.get('runes', '').split(',')]
-            items = [i.strip()
-                     for i in request.form.get('items', '').split(',')]
-            builds.append(
-                {"champion": champion, "runes": runes, "items": items})
+            runes = [r.strip() for r in request.form.get('runes', '').split(',')]
+            items = [i.strip() for i in request.form.get('items', '').split(',')]
+            builds.append({"champion": champion, "runes": runes, "items": items})
             return redirect(url_for('show_builds'))
-        return render_template('builds.html', builds=builds)
+         
+        return render_template('builds.html', builds=builds, champions=data, runas=runas_data, latest_version=latest_version, items=items_unique)
 
 
     @app.route('/champions', methods=['GET'])
     @app.route('/champions/<id>', methods=['GET'])
     def list_champion(id=None):
         if id:
-            champ_id = next((champ["id"] for champ in data.values(
-            ) if champ['name'].lower() == id.lower()), None)
+            champ_id = next((champ["id"] for champ in data.values() if champ['name'].lower() == id.lower()), None)
             if champ_id:
                 champinfo_url = f'https://ddragon.leagueoflegends.com/cdn/{latest_version}/data/pt_BR/champion/{champ_id}.json'
                 response = urllib.request.urlopen(champinfo_url)
                 champ_data = json.loads(response.read())['data'][champ_id]
                 return render_template('championsinfo.html', champion=champ_data)
             return 'Campeão não encontrado!', 404
-        return render_template('champions.html', champions=data)
+        return render_template('champions.html', champions=data, roles=roles, partypes=partypes)
 
 
     @app.route('/gamemodes', methods=['GET'])
@@ -135,7 +168,4 @@ def init_app(app):
 
     @app.route('/itens', methods=['GET'])
     def show_itens():
-        items_url = f"https://ddragon.leagueoflegends.com/cdn/{latest_version}/data/pt_BR/item.json"
-        response = urllib.request.urlopen(items_url)
-        items_data = json.loads(response.read())["data"]
         return render_template('items.html', items=items_data, latest_version=latest_version)

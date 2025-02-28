@@ -8,11 +8,19 @@
   cursor: url("/static/images/cursor.cur"), auto;
 }
 
+a:hover, 
+button:hover, 
+.card:hover, 
+.hovercard:hover, 
+.card-img-overlay:hover, 
+.card-img:hover{
+  cursor: url("/static/images/cursor_link.cur"), pointer;
+}
+
 .hovercard:hover {
   background-color: rgba(0, 0, 0, 0.1);
   transform: scale(1.05);
   transition: transform 0.3s ease, background-color 0.3s ease;
-  cursor: pointer;
 }
 
 .card-img {
@@ -22,7 +30,6 @@
 .hovercard:hover .card-img {
   filter: brightness(0.5);
 }
-
 
 .card-img-overlay {
   position: absolute;
@@ -44,7 +51,6 @@
   background-color: #f9f9f9;
   transform: scale(1.05);
   transition: transform 0.3s ease;
-  cursor: pointer;
 }
 
 .navbar a {
@@ -83,6 +89,27 @@
   color: #C89B3C;
 }
 
-.form-label{
+.form-label {
   color: #C89B3C;
+}
+
+.imghover:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+
+.items-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.form-check {
+  margin-bottom: 5px;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+  background-color: #F0F1F2;
+  color: #393A3B; 
 }

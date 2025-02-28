@@ -1,27 +1,85 @@
-{% extends "base.html" %}
-{% block content %}
-
+{% extends "base.html" %} {% block content %}
 <form method="POST">
-    <input type="text" name="champion" placeholder="Nome do Campeão" required>
-    
-    <label>Runas:</label>
-    <input type="text" name="runes" placeholder="Separe por vírgula (ex: Electrocutar, Gosto de Sangue)" required>
-    
-    <label>Itens:</label>
-    <input type="text" name="items" placeholder="Separe por vírgula (ex: Eco de Luden, Ampulheta de Zhonya)" required>
-    
-    <button type="submit">Adicionar Build</button>
+  <div class="d-flex align-items-start">
+    <div class="form-group">
+      <label for="champion" class="form-label">Campeão:</label>
+      <select
+        name="champion"
+        id="champion"
+        class="form-select form-select-sm"
+        required
+      >
+        {% for champion in champions %}
+        <option value="{{ champion }}">{{ champion }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group ms-3">
+      <label for="main-rune" class="form-label">Runa Principal:</label>
+      <select
+        name="main-rune"
+        id="main-rune"
+        class="form-select form-select-sm"
+        required
+      >
+        {% for main_rune in runas %}
+        <option value="{{ main_rune.id }}">{{ main_rune.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group ms-3 w-50">
+      <label for="items" class="form-label">Itemização:</label>
+      <div id="items-container" class="items-container">
+        <select
+          id="items-select"
+          name="items"
+          class="form-select form-select-sm"
+          multiple
+          required
+        >
+          {% for item in items %}
+          <option value="{{ item.name }}">{{ item.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center mt-3 ms-3">
+        <button type="submit" class="btn btn-success">Adicionar Build</button>
+      </div>
+  </div>
 </form>
 
 <h1>Lista de Builds</h1>
 <ul>
-    {% for build in builds %}
-        <li>
-            <strong>{{ build.champion }}</strong><br>
-            🏹 <strong>Runas:</strong> {{ build.runes | join(", ") }}<br>
-            🛡️ <strong>Itens:</strong> {{ build.items | join(", ") }}
-        </li>
+  {% for build in builds %}
+  <li>
+    <strong>{{ build.champion }}</strong><br />
+    🏹 <strong>Runas:</strong>
+    {% for rune in build.runes %}
+    <img
+      src="https://ddragon.leagueoflegends.com/cdn/{{ latest_version }}/img/perk/{{ rune.icon }}"
+      alt="{{ rune.name }}"
+      width="30"
+      height="30"
+    />
+    {{ rune.name }}<br />
     {% endfor %}
+    <br />
+    🛡️ <strong>Itens:</strong> {{ build.items | join(", ") }}
+  </li>
+  {% endfor %}
 </ul>
+
+<script>
+  $(document).ready(function () {
+    $("#items-select").select2({
+      placeholder: "Selecione até 5 itens",
+      maximumSelectionLength: 5,
+      allowClear: true,
+    });
+  });
+</script>
 
 {% endblock %}

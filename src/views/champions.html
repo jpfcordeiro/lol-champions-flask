@@ -1,22 +1,59 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container">
-  <h1 class="text-center my-4">Lista de Campeões</h1>
-  <div class="row">
-    {# Tive que fazer assim pois as info do campeão vem dentro da chave do nome dele #}
-    {% for champion_name, champion in champions.items() %}
-    <div class="col-md-4 col-lg-3 mb-4">
-      <div class="card shadow champcard" onclick="window.location.href='{{ url_for("list_champion", id=champion.id) }}'">
-        <img src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/{{ champion.id }}_0.jpg" class="card-img-top" alt="{{ champion.name }}">
-        <div class="card-body text-center">
-          <h5 class="card-title">{{ champion.name }}</h5>
-          <p class="card-text text-muted">{{ champion.title }}</p>
-        </div>
-      </div>
-    </div>
+<form method="POST">
+  <label for="champion" class="form-label">Campeão:</label>
+  <select
+    name="champion"
+    id="champion"
+    class="form-select form-select-sm"
+    required
+  >
+    {% for champion in champions %}
+    <option value="{{ champion }}">{{ champion }}</option>
     {% endfor %}
+  </select>
+
+  <label for="main-rune" class="form-label">Runa Principal:</label>
+  <select
+    name="main-rune"
+    id="main-rune"
+    class="form-select form-select-sm"
+    required
+    onchange="updateSubRunes()"
+  >
+    {% for main_rune in runas %}
+    <option value="{{ main_rune.id }}">
+      {{ main_rune.name }}
+    </option>
+    {% endfor %}
+  </select>
+
+  <label>Itens:</label>
+
+  <div id="items-container">
+    <select name="items" class="form-select form-select-sm">
+      <option value="">Selecione um item</option>
+      {% for item in items %}
+      <option value="{{ item.name }}">
+        {{ item.name }}
+      </option>
+      {% endfor %}
+    </select>
   </div>
-</div>
+
+  <button type="submit">Adicionar Build</button>
+</form>
+
+<h1>Lista de Builds</h1>
+<ul>
+  {% for build in builds %}
+  <li>
+    <strong>{{ build.champion }}</strong><br />
+    🏹 <strong>Runas:</strong> {{ build.runes | join(", ") }}<br />
+    🛡️ <strong>Itens:</strong> {{ build.items | join(", ") }}
+  </li>
+  {% endfor %}
+</ul>
 
 {% endblock %}
