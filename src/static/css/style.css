@@ -8,12 +8,12 @@
   cursor: url("/static/images/cursor.cur"), auto;
 }
 
-a:hover, 
-button:hover, 
-.card:hover, 
-.hovercard:hover, 
-.card-img-overlay:hover, 
-.card-img:hover{
+a:hover,
+button:hover,
+.card:hover,
+.hovercard:hover,
+.card-img-overlay:hover,
+.card-img:hover {
   cursor: url("/static/images/cursor_link.cur"), pointer;
 }
 
@@ -44,7 +44,7 @@ button:hover,
 .hovercard:hover .card-img-overlay {
   opacity: 1;
   transform: translateY(40%);
-  filter: brightness(1); 
+  filter: brightness(1);
 }
 
 .champcard:hover {
@@ -80,7 +80,8 @@ button:hover,
   border-collapse: collapse;
 }
 
-.custom-table td, .custom-table th {
+.custom-table td,
+.custom-table th {
   padding: 10px;
   border: 1px solid #C8AA6E;
 }
@@ -105,11 +106,61 @@ button:hover,
   width: 100%;
 }
 
+.champ-container {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+}
+
 .form-check {
   margin-bottom: 5px;
 }
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
   background-color: #F0F1F2;
-  color: #393A3B; 
+  color: #393A3B;
+}
+
+.champ-list {
+  max-height: 80vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #C8AA6E #1E2328;
+}
+
+@media (min-width: 992px) {
+  .champ-list {
+    max-height: 70vh;
+  }
+}
+
+@media (max-width: 576px) {
+  .champ-list {
+    max-height: 50vh;
+  }
+}
+
+
+.champ-list::-webkit-scrollbar {
+  width: 12px;
+}
+
+.champ-list::-webkit-scrollbar-track {
+  background-color: #1E2328;
+}
+
+.champ-list::-webkit-scrollbar-thumb {
+  background-color: #C8AA6E;
+  border-radius: 12px;
+}
+
+.champ-list::-webkit-scrollbar-thumb:hover {
+  background-color: #B28D5D;
+}
+
+.select2-selection__choice {
+  max-width: 100px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

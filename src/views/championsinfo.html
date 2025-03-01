@@ -23,6 +23,14 @@
         {% endfor %}
       </ul>
 
+      <ul>
+        {% for skin in champion.skins %}
+          <li>
+            <strong>{{ skin.name }}</strong> <br>
+          </li>
+        {% endfor %}
+      </ul>
+
       <h4>Estatísticas</h4>
       <ul>
         <li>HP: {{ champion.stats.hp }} (Crescimento: {{ champion.stats.hpperlevel }})</li>

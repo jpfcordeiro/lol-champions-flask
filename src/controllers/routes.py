@@ -7,7 +7,6 @@ rankings = {
     "Yasuo": {"winrate": 48.7, "pickrate": 15.2, "banrate": 30.5},
 }
 
-builds = []
 
 roles = {
     'assassin': 'Assassino', 'fighter': 'Lutador', 'mage': 'Mago', 'marksman': 'Atirador', 'support': 'Suporte', 'tank': 'Tanque'
@@ -45,12 +44,15 @@ game_modes_translation = {
     "ULTBOOK": "Livro Supremo de Feitiços"
 }
 
+data = {}
+builds = [{'champion': 'Ahri', 'runes': 'Inspiração', 'items_selected': ['A Espátula Dourada', 'Abraço Demoníaco']}]
+
+
 url_patch = 'https://ddragon.leagueoflegends.com/api/versions.json'
 response = urllib.request.urlopen(url_patch)
 versions = json.loads(response.read())
 latest_version = versions[0] if versions else None
 
-data = {}
 
 if latest_version:
     url_champions = f'https://ddragon.leagueoflegends.com/cdn/{latest_version}/data/pt_BR/championFull.json'
@@ -65,8 +67,7 @@ if latest_version:
     items_url = f"https://ddragon.leagueoflegends.com/cdn/{latest_version}/data/pt_BR/item.json"
     response = urllib.request.urlopen(items_url)
     items_data = json.loads(response.read())["data"]
-
-
+    
 
 def translate_game_modes(game_modes):
     return [
@@ -114,33 +115,39 @@ def init_app(app):
 
     @app.route('/builds', methods=['GET', 'POST'])
     def show_builds():
+        global builds #tive que usar pois estava com problema de unbound
         if latest_version:
-            url_runas = f'https://ddragon.leagueoflegends.com/cdn/{latest_version}/data/pt_BR/runesReforged.json'
-            response = urllib.request.urlopen(url_runas)
-            runas_data = json.loads(response.read())
+            try:
+                url_runas = f'https://ddragon.leagueoflegends.com/cdn/{latest_version}/data/pt_BR/runesReforged.json'
+                response = urllib.request.urlopen(url_runas)
+                runas_data = json.loads(response.read())
+            except urllib.error.URLError as e:
+                return f"Erro ao carregar dados das runas: {e}", 500
             
-            items_filtered = [
-                item for item in items_data.values() if item.get("depth") == 3
-            ]
+            if isinstance(items_data, dict):
+                items_filtered = [item for item in items_data.values() if item.get("depth") == 3]
+                items_sorted = sorted(items_filtered, key=lambda item: item["name"])
+                seen = set()
+                items_unique = []
+                for item in items_sorted:
+                    if item["name"] not in seen:
+                        items_unique.append(item)
+                        seen.add(item["name"])
+                        
+            else:
+                items_unique = []
             
-            items_sorted = sorted(items_filtered, key=lambda item: item["name"])
-            seen = set()
-            items_unique = []
-
-            for item in items_sorted:
-                if item["name"] not in seen:
-                    items_unique.append(item)
-                    seen.add(item["name"])
-
-            
-        if request.method == 'POST':
-            champion = request.form.get('champion')
-            runes = [r.strip() for r in request.form.get('runes', '').split(',')]
-            items = [i.strip() for i in request.form.get('items', '').split(',')]
-            builds.append({"champion": champion, "runes": runes, "items": items})
-            return redirect(url_for('show_builds'))
-         
+            if request.method == 'POST':
+                champion = request.form.get('champion')
+                main_rune = request.form.get('mainrune')
+                items_slc = request.form.getlist('items-select')
+                
+                if champion and main_rune and items_slc:
+                    builds.append({"champion": champion, "runes": main_rune, "items_selected": items_slc})
+                    return redirect(url_for('show_builds'))
+                
         return render_template('builds.html', builds=builds, champions=data, runas=runas_data, latest_version=latest_version, items=items_unique)
+
 
 
     @app.route('/champions', methods=['GET'])
