@@ -1,48 +1,80 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
+<div
+  class="bg-image"
+  style="background-image: url('{{ url_for('static', filename='images/back_build.jpg') }}'); background-size: cover; background-position: center; opacity: 0.7; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: brightness(0.6) blur(12px);"
+></div>
 <form method="POST" action="{{ url_for('show_builds') }}">
   <div class="d-flex align-items-start">
     <div class="form-group ms-3 d-flex flex-column">
       <div id="champ-container" class="champ-container">
-        <label for="champion" class="form-label">Campeão:</label>
-        <select name="champion" id="champion" class="form-select form-select-sm" required>
+        <label for="champion" class="form-label" style="color: #f1f1f1;">Campeão:</label>
+        <select
+          name="champion"
+          id="champion"
+          class="form-select form-select-sm"
+          required
+        >
           {% for champion_id, champion_data in champions.items() %}
-          <option value="{{ champion_id }}" data-image="{{ champion_data.image_url }}">{{ champion_data.name }}</option>
+          <option
+            value="{{ champion_id }}"
+            data-image="{{ champion_data.image_url }}"
+          >
+            {{ champion_data.name }}
+          </option>
           {% endfor %}
-
         </select>
       </div>
     </div>
 
     <div class="form-group ms-3">
-      <label for="mainrune" class="form-label">Runa Principal:</label>
-      <select name="mainrune" id="mainrune" class="form-select form-select-sm" required>
-        {% for main_rune in runas %}
-        <option value="{{ main_rune.name }}">{{ main_rune.name }}</option>
-        {% endfor %}
-      </select>
-    </div>
-
-    <div class="form-group ms-3 w-50">
-      <label for="items" class="form-label">Itemização:</label>
-      <div id="items-container" class="items-container">
-        <select id="items-select" name="items-select" class="form-select form-select-sm" multiple required>
-          {% for item in items %}
-          <option value="{{ item.name }}">{{ item.name }}</option>
+      <label for="mainrune" class="form-label" style="color: #f1f1f1;">Runa Principal:</label>
+      <div id="rune-container" class="rune-container">
+        <select
+          name="mainrune"
+          id="mainrune"
+          class="form-select form-select-sm"
+          required
+        >
+          {% for main_rune in runas %}
+          <option
+            value="{{ main_rune.name }}"
+            data-image="https://ddragon.leagueoflegends.com/cdn/img/{{ main_rune.icon }}"
+          >
+            {{ main_rune.name }}
+          </option>
           {% endfor %}
         </select>
       </div>
     </div>
-    <div class="d-flex justify-content-center mt-3 ms-3">
-      <button type="submit" class="btn btn-success">Adicionar Build</button>
+
+    <div class="form-group ms-3 w-50">
+      <label for="items" class="form-label" style="color: #f1f1f1;">Itemização:</label>
+      <div id="items-container" class="items-container">
+        <select
+          id="items-select"
+          name="items-select"
+          class="form-select form-select-sm"
+          multiple
+          required
+        >
+          {% for item in items %}
+          <option
+            value="{{ item.name }}"
+            data-image="https://ddragon.leagueoflegends.com/cdn/{{ latest_version }}/img/item/{{ item.image.full }}"
+          >
+            {{ item.name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center align-items-center">
+      <button type="submit" class="buttonBuild">Adicionar Build</button>
     </div>
   </div>
 </form>
-
+<hr />
 <h1>Lista de Builds</h1>
-
-<!-- Tabela para exibir as builds -->
 <table class="table table-striped">
   <thead>
     <tr>
@@ -56,32 +88,72 @@
     <tr>
       <td>
         {% if build.champion in champions %}
-        <img src="{{ champions[build.champion]['image_url'] }}" alt="{{ build.champion }}"
-          style="width: 30px; height: 30px; object-fit: cover" />
+        <img
+          src="{{ champions[build.champion]['image_url'] }}"
+          alt="{{ build.champion }}"
+          style="width: 30px; height: 30px; object-fit: cover"
+        />
         {% else %}
         <span>Imagem não encontrada</span>
         {% endif %}
         <strong>{{ build.champion }}</strong>
       </td>
       <td>
-        {% if build.runes %}
-        {{ build.runes }}
-        {% else %}
+        {% set rune = runas | selectattr('name', 'equalto', build.runes) | first
+        %} {% if rune %}
+        <img
+          src="https://ddragon.leagueoflegends.com/cdn/img/{{ rune.icon }}"
+          alt="{{ rune.name }}"
+          title="{{rune.name}}"
+          style="
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            margin-right: 5px;
+          "
+        />
+        {% for slot in rune.slots %} {% for subrune in slot.runes %} {% set
+        subruna = subrune %}
+        <img
+          src="https://ddragon.leagueoflegends.com/cdn/img/{{ subruna.icon }}"
+          alt="{{ subruna.name }}"
+          title="{{ subruna.name }}"
+          style="
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            margin-right: 5px;
+          "
+        />
+        {% endfor %} {% endfor %} {% else %}
         <em>Não definida</em>
         {% endif %}
       </td>
+
       <td>
-        {% if build.items_selected %}
-        {% if build.items_selected is iterable %}
-        <ul>
-          {% for item in build.items_selected %}
-          <li>{{ item }}</li>
-          {% endfor %}
+        {% if build.items_selected %} {% if build.items_selected is iterable %}
+        <ul style="display: flex; list-style-type: none; padding-left: 0">
+          {% for itemx in build.items_selected %} {% set item_found = false %}
+          {% for item in items %} {% if item.name == itemx %} {% set item_found
+          = true %}
+          <li>
+            <img
+              src="https://ddragon.leagueoflegends.com/cdn/{{ latest_version }}/img/item/{{ item.image.full }}"
+              alt="{{ item.name }}"
+              title="{{ item.name }}"
+              style="
+                width: 30px;
+                height: 30px;
+                object-fit: cover;
+                margin-right: 5px;
+              "
+            />
+          </li>
+          {% endif %} {% endfor %} {% endfor %}
         </ul>
         {% else %}
         <p>{{ build.items_selected }}</p>
-        {% endif %}
-        {% else %}
+        {% endif %} {% else %}
         <p>Sem itens definidos.</p>
         {% endif %}
       </td>
@@ -100,19 +172,70 @@
         }
 
         var $state = $(
-          '<span><img src="' + $(state.element).data('image') + '" style="width: 30px; height: 30px; object-fit: cover; margin-right: 10px;" /> ' + state.text + '</span>'
+          '<span><img src="' +
+            $(state.element).data("image") +
+            '" style="width: 30px; height: 30px; object-fit: cover; margin-right: 10px;" /> ' +
+            state.text +
+            "</span>"
         );
         return $state;
       },
       templateSelection: function (state) {
         return state.text;
-      }
+      },
+    });
+
+    $("#mainrune").select2({
+      allowClear: true,
+      templateResult: function (state) {
+        if (!state.id) {
+          return state.text;
+        }
+
+        var $state = $(
+          '<span><img src="' +
+            $(state.element).data("image") +
+            '" style="width: 30px; height: 30px; object-fit: cover; margin-right: 10px;" /> ' +
+            state.text +
+            "</span>"
+        );
+        return $state;
+      },
+      templateSelection: function (state) {
+        return state.text;
+      },
     });
 
     $("#items-select").select2({
-      placeholder: "Selecione até 5 itens",
-      maximumSelectionLength: 5,
+      placeholder: "Selecione até 6 itens",
+      maximumSelectionLength: 6,
       allowClear: true,
+      templateResult: function (state) {
+        if (!state.id) {
+          return state.text;
+        }
+
+        var $state = $(
+          '<span><img src="' +
+            $(state.element).data("image") +
+            '" style="width: 30px; height: 30px; object-fit: cover; margin-right: 10px;" /> ' +
+            state.text +
+            "</span>"
+        );
+        return $state;
+      },
+      templateSelection: function (state) {
+        if (!state.id) {
+          return state.text;
+        }
+
+        var $state = $(
+          '<span><img src="' +
+            $(state.element).data("image") +
+            '" style="width: 30px; height: 30px; object-fit: cover; margin-right: 10px;" /></span>'
+        );
+        return $state;
+      },
     });
   });
 </script>

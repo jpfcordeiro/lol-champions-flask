@@ -8,13 +8,12 @@
     </div>
   </div>
   <div class="d-flex justify-content-between align-items-center my-4">
-    <h1 class="text-center m-0">Lista de Campeões</h1>
+    <h1 class="text-center m-0" style="font-size: 40px">Lista de Campeões</h1>
     <button type="button" class="btn m-0" style="background-color: #1E2328; color: #C8AA6E" data-bs-toggle="modal" data-bs-target="#championsModal">
       Guia
     </button>
   </div>
 
-  <!-- Adicionando scroll responsivo à div com a listagem de campeões -->
   <div class="row champ-list" style="overflow-y: auto;">
     {% for champion_name, champion in champions.items() %}
     <div class="col-md-4 col-lg-3 mb-4">
@@ -24,7 +23,7 @@
           class="card-img-top" alt="{{ champion.name }}">
         <div class="card-body text-center">
           <h5 class="card-title">{{ champion.name }}</h5>
-          <p class="card-text text-muted">{{ champion.title }}</p>
+          <p class="card-text text-muted" style="line-height: 17px;">{{ champion.title }}</p>
 
           <div class="d-flex justify-content-between align-items-center mt-3">
             <div class="d-flex">
@@ -36,7 +35,7 @@
               {% endfor %}
             </div>
 
-            {% set partype_icon = 'nenhum' if champion.partype == '' else champion.partype | lower | replace("ç", "c") | replace("ã", "a") | replace("á", "a") | replace("é", "e") | replace("ú", "u") | replace(" ", "") %}
+            {% set partype_icon = 'nenhum' if champion.partype == '' else champion.partype | lower | replace("ç", "c") | replace("ã", "a") | replace("á", "a") | replace("é", "e") | replace("í", "i") | replace("ú", "u") | replace(" ", "") %}
             <img src="{{ url_for('static', filename='images/types/' + partype_icon + '.svg') }}"
               alt="{{ champion.partype }}" title="{{ partypes[partype_icon] }}" style="width: 24px; height: 24px;">
           </div>

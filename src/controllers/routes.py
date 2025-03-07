@@ -145,7 +145,6 @@ def init_app(app):
                 if champion and main_rune and items_slc:
                     builds.append({"champion": champion, "runes": main_rune, "items_selected": items_slc})
                     return redirect(url_for('show_builds'))
-                
         return render_template('builds.html', builds=builds, champions=data, runas=runas_data, latest_version=latest_version, items=items_unique)
 
 
@@ -175,4 +174,12 @@ def init_app(app):
 
     @app.route('/itens', methods=['GET'])
     def show_itens():
-        return render_template('items.html', items=items_data, latest_version=latest_version)
+        items_filtered = [item for item in items_data.values() if item.get("depth") == 3]
+        items_sorted = sorted(items_filtered, key=lambda item: item["name"])
+        seen = set()
+        items_unique = []
+        for item in items_sorted:
+            if item["name"] not in seen:
+                items_unique.append(item)
+                seen.add(item["name"])
+        return render_template('items.html', items=items_unique, latest_version=latest_version)
