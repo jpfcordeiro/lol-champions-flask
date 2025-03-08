@@ -9,6 +9,29 @@
       <p class="card-text">{{ champion.lore }}</p>
     </div>
     <div style="width: 45%;">
+
+      <div id="skinsCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          {% for skin in champion.skins %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}">
+              <img src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/{{ champion.id }}_{{ skin.num }}.jpg" class="d-block w-100" alt="Skin {{ skin.name }}">
+              <div class="carousel-caption d-none d-md-block">
+                <h5>{{ skin.name }}</h5>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#skinsCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#skinsCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Próximo</span>
+        </button>
+      </div>
+      
+
       <h4>Passiva</h4>
       <p><strong>{{ champion.passive.name }}</strong>: {{ champion.passive.description }}</p>
       <img src="https://ddragon.leagueoflegends.com/cdn/14.4.1/img/passive/{{ champion.passive.image.full }}" alt="Passiva de {{ champion.name }}">
@@ -19,14 +42,6 @@
           <li>
             <strong>{{ spell.name }}</strong>: {{ spell.description }} <br>
             <img src="https://ddragon.leagueoflegends.com/cdn/14.4.1/img/spell/{{ spell.image.full }}" alt="Habilidade {{ spell.name }}">
-          </li>
-        {% endfor %}
-      </ul>
-
-      <ul>
-        {% for skin in champion.skins %}
-          <li>
-            <strong>{{ skin.name }}</strong> <br>
           </li>
         {% endfor %}
       </ul>

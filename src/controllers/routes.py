@@ -169,7 +169,8 @@ def init_app(app):
         response = urllib.request.urlopen(gamemode_url)
         game_modes_api = json.loads(response.read())
         translated_modes = translate_game_modes(game_modes_api)
-        return render_template('gamemodes.html', gamemodes=translated_modes)
+        gamemodes_sorted = sorted(translated_modes, key=lambda x: x['gameMode'])
+        return render_template('gamemodes.html', gamemodes=gamemodes_sorted)
 
 
     @app.route('/itens', methods=['GET'])
