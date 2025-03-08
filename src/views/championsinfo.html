@@ -1,61 +1,97 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="card" style="width: 100%;">
-  <img src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/{{ champion.id }}_0.jpg" class="card-img-top" alt="{{ champion.name }} splash art" style="width: 300px;">
-  
-  <div class="card-body" style="display: flex; justify-content: space-between;">
-    <div style="width: 45%;">
-      <h3 class="card-title">{{ champion.name }} ({{ champion.title }})</h3>
-      <p class="card-text">{{ champion.lore }}</p>
-    </div>
-    <div style="width: 45%;">
+<div
+  class="bg-image"
+  style="background-image: url('https://ddragon.leagueoflegends.com/cdn/img/champion/splash/{{ champion.id }}_0.jpg'); 
+         background-size: cover; 
+         background-position: center; 
+         opacity: 0.3; 
+         position: absolute; 
+         top: 0; 
+         left: 0; 
+         width: 100%; 
+         height: 100%; 
+         z-index: -1; 
+         filter: brightness(0.6) blur(12px);">
+</div>
+<div class="container mt-4">
+  <div class="rounded p-4" style="background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(6px); border-radius: 15px;">
+    <div class="row">
+      
+      <div class="col-md-6">
+        <h2 class="mb-3 text-white">{{ champion.name }} <small class="text" style="color: #C89B3C;">({{ champion.title }})</small></h2>
+        <p class="text-light">{{ champion.lore }}</p>
 
-      <div id="skinsCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          {% for skin in champion.skins %}
-            <div class="carousel-item {% if loop.first %}active{% endif %}">
-              <img src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/{{ champion.id }}_{{ skin.num }}.jpg" class="d-block w-100" alt="Skin {{ skin.name }}">
-              <div class="carousel-caption d-none d-md-block">
-                <h5>{{ skin.name }}</h5>
-              </div>
+        <h4 class="mt-4 text-white">Passiva</h4>
+        <div class="d-flex align-items-center">
+          <img src="https://ddragon.leagueoflegends.com/cdn/14.4.1/img/passive/{{ champion.passive.image.full }}" 
+               class="me-3" 
+               style="width: 48px; height: 48px;" 
+               alt="Passiva">
+          <div>
+            <strong class="text-light">{{ champion.passive.name }}</strong>
+            <p class="m-0 text-light">{{ champion.passive.description | safe }}</p>
+          </div>
+        </div>
+
+        <h4 class="mt-4 text-white">Habilidades</h4>
+        <div class="row">
+          {% for spell in champion.spells %}
+          <div class="col-6 d-flex align-items-center mb-2">
+            <img src="https://ddragon.leagueoflegends.com/cdn/14.4.1/img/spell/{{ spell.image.full }}" 
+                 class="me-3" 
+                 style="width: 48px; height: 48px;" 
+                 alt="Habilidade">
+            <div>
+              <strong class="text-light">{{ spell.name }}</strong>
+              <p class="m-0 small text-light">{{ spell.description }}</p>
             </div>
+          </div>
           {% endfor %}
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#skinsCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Anterior</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#skinsCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Próximo</span>
-        </button>
       </div>
-      
 
-      <h4>Passiva</h4>
-      <p><strong>{{ champion.passive.name }}</strong>: {{ champion.passive.description }}</p>
-      <img src="https://ddragon.leagueoflegends.com/cdn/14.4.1/img/passive/{{ champion.passive.image.full }}" alt="Passiva de {{ champion.name }}">
+      <div class="col-md-6">
+        <div id="skinsCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            {% for skin in champion.skins %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}">
+              <img src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/{{ champion.id }}_{{ skin.num }}.jpg" 
+                   class="d-block w-100 rounded" 
+                   alt="{{ skin.name }}">
+              <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
+                <h5 style="font-size: 26px;">{{ skin.name }}</h5>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#skinsCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#skinsCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          </button>
+        </div>
 
-      <h4>Habilidades</h4>
-      <ul>
-        {% for spell in champion.spells %}
-          <li>
-            <strong>{{ spell.name }}</strong>: {{ spell.description }} <br>
-            <img src="https://ddragon.leagueoflegends.com/cdn/14.4.1/img/spell/{{ spell.image.full }}" alt="Habilidade {{ spell.name }}">
-          </li>
-        {% endfor %}
-      </ul>
-
-      <h4>Estatísticas</h4>
-      <ul>
-        <li>HP: {{ champion.stats.hp }} (Crescimento: {{ champion.stats.hpperlevel }})</li>
-        <li>Ataque: {{ champion.stats.attackdamage }}</li>
-        <li>Velocidade de Movimento: {{ champion.stats.movespeed }}</li>
-        <li>Armadura: {{ champion.stats.armor }}</li>
-        <li>Resistência Mágica: {{ champion.stats.spellblock }}</li>
-      </ul>
+        <div id="skinThumbnails" class="mt-3" style="max-width: 660px; max-height: 350px; overflow-y: auto;">
+          {% for skin in champion.skins %}
+          <img src="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/{{ champion.id }}_{{ skin.num }}.jpg"
+               class="rounded skin-thumb mt-1"
+               onclick="changeSkin({{ loop.index }})">
+          {% endfor %}
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+<script>
+  function changeSkin(index) {
+    const carousel = document.getElementById("skinsCarousel");
+    const items = carousel.querySelectorAll(".carousel-item");
+    items.forEach((item) => item.classList.remove("active"));
+    items[index - 1].classList.add("active");
+  }
+</script>
 
 {% endblock %}

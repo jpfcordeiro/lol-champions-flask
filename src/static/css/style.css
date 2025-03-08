@@ -221,3 +221,35 @@ button:hover,
   box-shadow: none;
   color: #cdbe9130;
 }
+
+.skin-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 10px;
+  cursor: grab;
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+.skin-scroll::-webkit-scrollbar {
+  height: 5px;
+}
+
+.skin-scroll::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+.skin-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.skin-thumb {
+  width: 80px;
+  height: auto;
+  flex-shrink: 0;
+  cursor: url("{{ url_for('static', filename='images/cursor_link.cur') }}"), pointer !important;
+}
+
