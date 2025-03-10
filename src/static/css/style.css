@@ -247,7 +247,7 @@ button:hover,
 }
 
 .skin-thumb {
-  width: 80px;
+  width: 60px;
   height: auto;
   flex-shrink: 0;
   cursor: url("{{ url_for('static', filename='images/cursor_link.cur') }}"), pointer !important;
