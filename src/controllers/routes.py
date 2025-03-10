@@ -1,6 +1,8 @@
 from flask import redirect, render_template, request, url_for
+from urllib.parse import quote
 import urllib
 import json
+
 
 rankings = {
     "Ahri": {"winrate": 52.3, "pickrate": 7.4, "banrate": 2.1},
@@ -155,7 +157,7 @@ def init_app(app):
         if id:
             champ_id = next((champ["id"] for champ in data.values() if champ['name'].lower() == id.lower()), None)
             if champ_id:
-                champinfo_url = f'https://ddragon.leagueoflegends.com/cdn/{latest_version}/data/pt_BR/champion/{champ_id}.json'
+                champinfo_url = f"https://ddragon.leagueoflegends.com/cdn/{latest_version}/data/pt_BR/champion/{champ_id}.json"
                 response = urllib.request.urlopen(champinfo_url)
                 champ_data = json.loads(response.read())['data'][champ_id]
                 return render_template('championsinfo.html', champion=champ_data)
