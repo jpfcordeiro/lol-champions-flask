@@ -7,7 +7,9 @@
   <div class="d-flex align-items-start">
     <div class="form-group ms-3 d-flex flex-column">
       <div id="champ-container" class="champ-container">
-        <label for="champion" class="form-label" style="color: #f1f1f1;">Campeão:</label>
+        <label for="champion" class="form-label" style="color: #f1f1f1"
+          >Campeão:</label
+        >
         <select
           name="champion"
           id="champion"
@@ -27,7 +29,9 @@
     </div>
 
     <div class="form-group ms-3">
-      <label for="mainrune" class="form-label" style="color: #f1f1f1;">Runa Principal:</label>
+      <label for="mainrune" class="form-label" style="color: #f1f1f1"
+        >Runa Principal:</label
+      >
       <div id="rune-container" class="rune-container">
         <select
           name="mainrune"
@@ -48,7 +52,9 @@
     </div>
 
     <div class="form-group ms-3 w-50">
-      <label for="items" class="form-label" style="color: #f1f1f1;">Itemização:</label>
+      <label for="items" class="form-label" style="color: #f1f1f1"
+        >Itemização:</label
+      >
       <div id="items-container" class="items-container">
         <select
           id="items-select"
@@ -75,93 +81,95 @@
 </form>
 <hr />
 <h1>Lista de Builds</h1>
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Campeão</th>
-      <th>Runa Principal</th>
-      <th>Itens</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for build in builds %}
-    <tr>
-      <td>
-        {% if build.champion in champions %}
-        <img
-          src="{{ champions[build.champion]['image_url'] }}"
-          alt="{{ build.champion }}"
-          style="width: 30px; height: 30px; object-fit: cover"
-        />
-        {% else %}
-        <span>Imagem não encontrada</span>
-        {% endif %}
-        <strong>{{ build.champion }}</strong>
-      </td>
-      <td>
-        {% set rune = runas | selectattr('name', 'equalto', build.runes) | first
-        %} {% if rune %}
-        <img
-          src="https://ddragon.leagueoflegends.com/cdn/img/{{ rune.icon }}"
-          alt="{{ rune.name }}"
-          title="{{rune.name}}"
-          style="
-            width: 30px;
-            height: 30px;
-            object-fit: cover;
-            margin-right: 5px;
-          "
-        />
-        {% for slot in rune.slots %} {% for subrune in slot.runes %} {% set
-        subruna = subrune %}
-        <img
-          src="https://ddragon.leagueoflegends.com/cdn/img/{{ subruna.icon }}"
-          alt="{{ subruna.name }}"
-          title="{{ subruna.name }}"
-          style="
-            width: 30px;
-            height: 30px;
-            object-fit: cover;
-            margin-right: 5px;
-          "
-        />
-        {% endfor %} {% endfor %} {% else %}
-        <em>Não definida</em>
-        {% endif %}
-      </td>
+<div style="max-height: 310px; overflow-y: auto">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Campeão</th>
+        <th>Runa Principal</th>
+        <th>Itens</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for build in builds %}
+      <tr>
+        <td>
+          {% if build.champion in champions %}
+          <img
+            src="{{ champions[build.champion]['image_url'] }}"
+            alt="{{ build.champion }}"
+            style="width: 30px; height: 30px; object-fit: cover"
+          />
+          {% else %}
+          <span>Imagem não encontrada</span>
+          {% endif %}
+          <strong>{{ build.champion }}</strong>
+        </td>
+        <td>
+          {% set rune = runas | selectattr('name', 'equalto', build.runes) |
+          first %} {% if rune %}
+          <img
+            src="https://ddragon.leagueoflegends.com/cdn/img/{{ rune.icon }}"
+            alt="{{ rune.name }}"
+            title="{{rune.name}}"
+            style="
+              width: 30px;
+              height: 30px;
+              object-fit: cover;
+              margin-right: 5px;
+            "
+          />
+          {% for slot in rune.slots %} {% for subrune in slot.runes %} {% set
+          subruna = subrune %}
+          <img
+            src="https://ddragon.leagueoflegends.com/cdn/img/{{ subruna.icon }}"
+            alt="{{ subruna.name }}"
+            title="{{ subruna.name }}"
+            style="
+              width: 30px;
+              height: 30px;
+              object-fit: cover;
+              margin-right: 5px;
+            "
+          />
+          {% endfor %} {% endfor %} {% else %}
+          <em>Não definida</em>
+          {% endif %}
+        </td>
 
-      <td>
-        {% if build.items_selected %} {% if build.items_selected is iterable %}
-        <ul style="display: flex; list-style-type: none; padding-left: 0">
-          {% for itemx in build.items_selected %} {% set item_found = false %}
-          {% for item in items %} {% if item.name == itemx %} {% set item_found
-          = true %}
-          <li>
-            <img
-              src="https://ddragon.leagueoflegends.com/cdn/{{ latest_version }}/img/item/{{ item.image.full }}"
-              alt="{{ item.name }}"
-              title="{{ item.name }}"
-              style="
-                width: 30px;
-                height: 30px;
-                object-fit: cover;
-                margin-right: 5px;
-              "
-            />
-          </li>
-          {% endif %} {% endfor %} {% endfor %}
-        </ul>
-        {% else %}
-        <p>{{ build.items_selected }}</p>
-        {% endif %} {% else %}
-        <p>Sem itens definidos.</p>
-        {% endif %}
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
+        <td>
+          {% if build.items_selected %} {% if build.items_selected is iterable
+          %}
+          <ul style="display: flex; list-style-type: none; padding-left: 0">
+            {% for itemx in build.items_selected %} {% set item_found = false %}
+            {% for item in items %} {% if item.name == itemx %} {% set
+            item_found = true %}
+            <li>
+              <img
+                src="https://ddragon.leagueoflegends.com/cdn/{{ latest_version }}/img/item/{{ item.image.full }}"
+                alt="{{ item.name }}"
+                title="{{ item.name }}"
+                style="
+                  width: 30px;
+                  height: 30px;
+                  object-fit: cover;
+                  margin-right: 5px;
+                "
+              />
+            </li>
+            {% endif %} {% endfor %} {% endfor %}
+          </ul>
+          {% else %}
+          <p>{{ build.items_selected }}</p>
+          {% endif %} {% else %}
+          <p>Sem itens definidos.</p>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 <script>
   $(document).ready(function () {
     $("#champion").select2({

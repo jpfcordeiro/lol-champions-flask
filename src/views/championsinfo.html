@@ -44,7 +44,7 @@
                  alt="Habilidade">
             <div>
               <strong style="color: #C89B3C;">{{ spell.name }}</strong>
-              <p class="m-0 small text-light" style="font-size: 12px;">{{ spell.description }}</p>
+              <p class="m-0 small text-light" style="font-size: 12px;">{{ spell.description | safe }}</p>
             </div>
           </div>
           {% endfor %}
