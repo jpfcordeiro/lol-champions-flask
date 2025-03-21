@@ -253,3 +253,15 @@ button:hover,
   cursor: url("{{ url_for('static', filename='images/cursor_link.cur') }}"), pointer !important;
 }
 
+.navbar-text {
+  transition: color 0.3s ease;
+}
+
+.navbar-text:hover {
+  color: #fff !important; 
+  cursor: url("{{ url_for('static', filename='images/cursor_link.cur') }}"), pointer !important; 
+}
+
+.select2-container--open {
+  z-index: 9999999
+}

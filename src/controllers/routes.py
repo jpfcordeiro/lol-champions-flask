@@ -2,6 +2,7 @@ from flask import redirect, render_template, request, url_for
 from urllib.parse import quote
 import urllib
 import json
+from models.database import db, Champion
 
 
 rankings = {
@@ -186,3 +187,41 @@ def init_app(app):
                 items_unique.append(item)
                 seen.add(item["name"])
         return render_template('items.html', items=items_unique, latest_version=latest_version)
+
+    @app.route('/profile', methods=['GET', 'POST'])
+    def show_profile():
+        page = request.args.get('page', 1, type=int)
+        champions = Champion.query.paginate(page=page, per_page=10)
+        next_url = url_for('profile', page=champions.next_num) if champions.has_next else None
+        prev_url = url_for('profile', page=champions.prev_num) if champions.has_prev else None
+
+        return render_template('profile.html', gamechampions=data,champions=champions.items, next_url=next_url, prev_url=prev_url)
+
+    @app.route('/add_champion', methods=['POST'])
+    def add_champion():
+        nome = request.form['nome']
+        lane = request.form['lane']
+        new_champion = Champion(nome=nome, lane=lane)
+        db.session.add(new_champion)
+        db.session.commit()
+
+        return redirect(url_for('profile'))
+
+    @app.route('/edit_champion/<int:id>', methods=['GET', 'POST'])
+    def edit_champion(id):
+        champion = Champion.query.get(id)
+        if request.method == 'POST':
+            champion.nome = request.form['nome']
+            champion.lane = request.form['lane']
+            db.session.commit()
+            return redirect(url_for('profile'))
+
+        return render_template('edit_champion.html', champion=champion)
+
+    @app.route('/delete_champion/<int:id>', methods=['POST'])
+    def delete_champion(id):
+        champion = Champion.query.get(id)
+        db.session.delete(champion)
+        db.session.commit()
+        return redirect(url_for('profile'))
+

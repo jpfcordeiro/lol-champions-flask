@@ -1,0 +1,171 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+  <div>
+    {% if champions %}
+    <div
+      class="bg-image"
+      style="background-image: url('{{ champions[0].image_url }}'); background-size: cover; background-position: center; opacity: 0.6; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: blur(5px);"
+    ></div>
+    {% else %}
+    <div
+      class="bg-image"
+      style="background-image: url('{{ url_for('static', filename='images/back_profile.jpg') }}'); background-size: cover; background-position: center; opacity: 0.6; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: blur(5px);"
+    ></div>
+    {% endif %}
+  </div>
+  <h3>Campeões Favoritos</h3>
+
+  <button
+    class="btn btn-primary"
+    data-bs-toggle="collapse"
+    data-bs-target="#championFormCollapse"
+    aria-expanded="false"
+    aria-controls="championFormCollapse"
+  >
+    Adicionar Campeão
+  </button>
+
+  <div class="collapse mt-3" id="championFormCollapse">
+    <form method="POST" action="{{ url_for('add_champion') }}">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="nome" class="form-label">Nome do Campeão</label>
+          <select
+            name="nome"
+            id="nome"
+            class="form-select form-select-sm w-100"
+            required
+          >
+            {% for champion_id, champion_data in gamechampions.items() %}
+            <option
+              value="{{ champion_id }}"
+              data-image="{{ champion_data.image_url }}"
+            >
+              {{ champion_data.name }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="lane" class="form-label">Lane</label>
+          <select
+            name="lane"
+            id="lane"
+            class="form-select form-select-sm w-100"
+            required
+          >
+            <option
+              value="top"
+              data-icon="{{url_for('static', filename='images/lanes/top.png')}}"
+            >
+              Top
+            </option>
+            <option
+              value="jg"
+              data-icon="{{url_for('static', filename='images/lanes/jungle.png')}}"
+            >
+              Jungle
+            </option>
+            <option
+              value="mid"
+              data-icon="{{url_for('static', filename='images/lanes/mid.png')}}"
+            >
+              Mid
+            </option>
+            <option
+              value="adc"
+              data-icon="{{url_for('static', filename='images/lanes/adc.png')}}"
+            >
+              ADC
+            </option>
+            <option
+              value="sup"
+              data-icon="{{url_for('static', filename='images/lanes/sup.png')}}"
+            >
+              Support
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+  </div>
+
+  <h3 class="mt-4">Lista</h3>
+  <table class="table mt-4">
+    <thead>
+      <tr>
+        <th scope="col">Nome</th>
+        <th scope="col">Lane</th>
+        <th scope="col">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for champion in champions %}
+      <tr>
+        <td>{{ champion.nome }}</td>
+        <td>{{ champion.lane }}</td>
+        <td>
+          <a href="#" class="btn btn-warning">Editar</a>
+          <form
+            action="{{ url_for('delete_champion', id=champion.id) }}"
+            method="POST"
+            style="display: inline"
+          >
+            <button type="submit" class="btn btn-danger">Excluir</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  $("#nome").select2({
+    placeholder: "Selecione um campeão",
+    width: "100%",
+    templateResult: function (state) {
+      if (!state.id) {
+        return state.text;
+      }
+      var $state = $(
+        '<span><img src="' +
+          $(state.element).data("image") +
+          '" style="width: 30px; height: 30px; object-fit: cover; margin-right: 10px;" /> ' +
+          state.text +
+          "</span>"
+      );
+      return $state;
+    },
+    templateSelection: function (state) {
+      return state.text;
+    },
+  });
+
+  $("#lane").select2({
+    placeholder: "Selecione uma lane",
+    width: "100%",
+    templateResult: function (state) {
+      if (!state.id) {
+        return state.text;
+      }
+      var iconUrl = $(state.element).data("icon");
+      var $state = $(
+        '<span><img src="' +
+          iconUrl +
+          '" style="width: 20px; height: 20px; margin-right: 10px;" /> ' +
+          state.text +
+          "</span>"
+      );
+      return $state;
+    },
+    templateSelection: function (state) {
+      return state.text;
+    },
+  });
+</script>
+{% endblock %}
