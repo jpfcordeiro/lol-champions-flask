@@ -6,11 +6,6 @@
       class="bg-image"
       style="background-image: url('{{ champions[0].image_url }}'); background-size: cover; background-position: center; opacity: 0.6; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: blur(5px);"
     ></div>
-    {% else %}
-    <div
-      class="bg-image"
-      style="background-image: url('{{ url_for('static', filename='images/back_profile.jpg') }}'); background-size: cover; background-position: center; opacity: 0.6; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: blur(5px);"
-    ></div>
     {% endif %}
   </div>
   <h3>Campeões Favoritos</h3>
@@ -83,7 +78,7 @@
               value="sup"
               data-icon="{{url_for('static', filename='images/lanes/sup.png')}}"
             >
-              Support
+              Suporte
             </option>
           </select>
         </div>
@@ -94,33 +89,56 @@
   </div>
 
   <h3 class="mt-4">Lista</h3>
-  <table class="table mt-4">
-    <thead>
-      <tr>
-        <th scope="col">Nome</th>
-        <th scope="col">Lane</th>
-        <th scope="col">Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for champion in champions %}
-      <tr>
-        <td>{{ champion.nome }}</td>
-        <td>{{ champion.lane }}</td>
-        <td>
-          <a href="#" class="btn btn-warning">Editar</a>
-          <form
-            action="{{ url_for('delete_champion', id=champion.id) }}"
-            method="POST"
-            style="display: inline"
-          >
-            <button type="submit" class="btn btn-danger">Excluir</button>
-          </form>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<table class="table mt-4">
+  <thead>
+    <tr>
+      <th scope="col">Nome</th>
+      <th scope="col">Lane</th>
+      <th scope="col">Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for champion in champions %}
+    <tr>
+      <td>
+        <img
+          src="{{ gamechampions[champion.nome].image_url }}"
+          alt="{{ champion.nome }}"
+          style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%; margin-right: 5px;"
+        />
+        {{ champion.nome }}
+      </td>
+      <td>
+        {% if champion.lane == 'top' %}
+          <img src="{{ url_for('static', filename='images/lanes/top.png') }}" width="20" height="20" />
+          Top Lane
+        {% elif champion.lane == 'jungle' %}
+          <img src="{{ url_for('static', filename='images/lanes/jungle.png') }}" width="20" height="20" />
+          Jungle
+        {% elif champion.lane == 'mid' %}
+          <img src="{{ url_for('static', filename='images/lanes/mid.png') }}" width="20" height="20" />
+          Mid Lane
+        {% elif champion.lane == 'adc' %}
+          <img src="{{ url_for('static', filename='images/lanes/adc.png') }}" width="20" height="20" />
+          Atirador
+        {% elif champion.lane == 'sup' %}
+          <img src="{{ url_for('static', filename='images/lanes/sup.png') }}" width="20" height="20" />
+          Suporte
+        {% else %}
+          Sem lane
+        {% endif %}
+      </td>
+      <td class="champion-actions">
+        <a href="{{ url_for('edit_champion', id=champion.id) }}" class="btn btn-warning">Editar</a>
+        <form action="{{ url_for('delete_champion', id=champion.id) }}" method="POST" style="display: inline">
+          <button type="submit" class="btn btn-danger">Excluir</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -167,5 +185,6 @@
       return state.text;
     },
   });
+  
 </script>
 {% endblock %}

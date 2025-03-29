@@ -205,23 +205,24 @@ def init_app(app):
         db.session.add(new_champion)
         db.session.commit()
 
-        return redirect(url_for('profile'))
+        return redirect(url_for('show_profile'))
 
     @app.route('/edit_champion/<int:id>', methods=['GET', 'POST'])
     def edit_champion(id):
-        champion = Champion.query.get(id)
+        champion = Champion.query.get_or_404(id)
         if request.method == 'POST':
             champion.nome = request.form['nome']
             champion.lane = request.form['lane']
             db.session.commit()
-            return redirect(url_for('profile'))
+            return redirect(url_for('show_profile')) 
 
-        return render_template('edit_champion.html', champion=champion)
+        return render_template('editchampion.html', champion=champion, gamechampions=data)
+
 
     @app.route('/delete_champion/<int:id>', methods=['POST'])
     def delete_champion(id):
         champion = Champion.query.get(id)
         db.session.delete(champion)
         db.session.commit()
-        return redirect(url_for('profile'))
+        return redirect(url_for('show_profile'))
 
