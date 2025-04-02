@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <h3>Editar Campeão</h3>
+  <form method="POST">
+    <div class="mb-3">
+      <label for="nome" class="form-label">Nome do Campeão</label>
+      <select name="nome" id="nome" class="form-select" required>
+        {% for champion_id, champion_data in gamechampions.items() %}
+        <option value="{{ champion_id }}" 
+                data-image="{{ champion_data.image_url }}" 
+                {% if champion.nome == champion_data.name %}selected{% endif %}>
+          {{ champion_data.name }}
+        </option>
+        {% endfor %}
+      </select>
+      <div id="champion-icon" class="mt-2">
+        <img src="{{ gamechampions[champion.nome].image_url }}" alt="{{ champion.nome }}" 
+             style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" />
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="lane" class="form-label">Lane</label>
+      <select name="lane" id="lane" class="form-select" required>
+        <option value="top" data-icon="{{ url_for('static', filename='images/lanes/top.png') }}" {% if champion.lane == 'top' %}selected{% endif %}>Top</option>
+        <option value="jungle" data-icon="{{ url_for('static', filename='images/lanes/jungle.png') }}" {% if champion.lane == 'jungle' %}selected{% endif %}>Jungle</option>
+        <option value="mid" data-icon="{{ url_for('static', filename='images/lanes/mid.png') }}" {% if champion.lane == 'mid' %}selected{% endif %}>Mid</option>
+        <option value="adc" data-icon="{{ url_for('static', filename='images/lanes/adc.png') }}" {% if champion.lane == 'adc' %}selected{% endif %}>ADC</option>
+        <option value="support" data-icon="{{ url_for('static', filename='images/lanes/sup.png') }}" {% if champion.lane == 'sup' %}selected{% endif %}>Suporte</option>
+      </select>
+      <div id="lane-icon" class="mt-2">
+        <img src="{{ url_for('static', filename='images/lanes/' + champion.lane + '.png') }}" 
+             alt="{{ champion.lane }}" width="40" height="40" />
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a href="{{ url_for('show_profile') }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
+
+<script>
+  $(document).ready(function () {
+    $("#nome").select2({
+      templateResult: function (state) {
+        if (!state.id) {
+          return state.text;
+        }
+        var imageUrl = $(state.element).data("image");
+        return $('<span><img src="' + imageUrl + '" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;" /> ' + state.text + '</span>');
+      },
+      templateSelection: function (state) {
+        var imageUrl = $(state.element).data("image");
+        $("#champion-icon img").attr("src", imageUrl);
+        return state.text;
+      }
+    });
+
+    $("#lane").select2({
+      templateResult: function (state) {
+        if (!state.id) {
+          return state.text;
+        }
+        var iconUrl = $(state.element).data("icon");
+        return $('<span><img src="' + iconUrl + '" style="width: 20px; height: 20px; margin-right: 10px;" /> ' + state.text + '</span>');
+      },
+      templateSelection: function (state) {
+        var iconUrl = $(state.element).data("icon");
+        $("#lane-icon img").attr("src", iconUrl);
+        return state.text;
+      }
+    });
+  });
+</script>
+
+{% endblock %}
