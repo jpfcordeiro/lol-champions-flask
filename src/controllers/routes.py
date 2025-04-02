@@ -1,8 +1,10 @@
-from flask import redirect, render_template, request, url_for
+from flask import redirect, render_template, request, url_for, flash
 from urllib.parse import quote
 import urllib
 import json
 from models.database import db, Champion
+import os
+import uuid
 
 
 rankings = {
@@ -224,4 +226,21 @@ def init_app(app):
         db.session.delete(champion)
         db.session.commit()
         return redirect(url_for('profile'))
+    
+    
+    FILE_TYPES = set(['png', 'jpg', 'jpeg', 'gif'])
+    def arquivos_permitidos(filename):
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in FILE_TYPES
 
+    @app.route('/galeria', methods=['GET', 'POST'])
+    def galeria():
+        if request.method == 'POST':
+            file = request.files['file']
+            if file and arquivos_permitidos(file.filename):
+                filename = str(uuid.uuid4()) + file.filename
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                flash('Arquivo enviado com sucesso!')
+                return redirect(url_for('galeria'))
+            else:
+                flash('Arquivo não permitido!')
+        return render_template('galeria.html')

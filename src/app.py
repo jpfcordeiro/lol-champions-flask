@@ -7,9 +7,13 @@ app = Flask(__name__, template_folder='views')
 
 routes.init_app(app)
 
-dir = os.path.abspath(os.path.dirname(__file__))
+DB_NAME = 'champions'
+app.config['DATABASE_NAME'] = DB_NAME
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(dir, 'models/champions.sqlite3')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://root:root@localhost/{DB_NAME}'
+
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 if (__name__) == '__main__':
     db.init_app(app=app)
