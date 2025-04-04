@@ -2,9 +2,11 @@ from flask import redirect, render_template, request, url_for, flash
 from urllib.parse import quote
 import urllib
 import json
-from models.database import db, Champion
+from models.database import db, Champion, Gallery
 import os
 import uuid
+from werkzeug.utils import secure_filename
+from datetime import datetime
 
 
 rankings = {
@@ -227,4 +229,61 @@ def init_app(app):
         db.session.delete(champion)
         db.session.commit()
         return redirect(url_for('profile'))
+
+    @app.route('/galeria', methods=['GET', 'POST'])
+    def galeria():
+        if request.method == 'POST':
+            if 'file' not in request.files:
+                flash('Nenhum arquivo selecionado')
+                return redirect(request.url)
+            
+            file = request.files['file']
+            if file.filename == '':
+                flash('Nenhum arquivo selecionado')
+                return redirect(request.url)
+            
+            if file:
+                # Generate a unique filename
+                filename = secure_filename(file.filename)
+                unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                
+                # Save the file
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+                file.save(file_path)
+                
+                # Save to database
+                title = request.form.get('title', '')
+                description = request.form.get('description', '')
+                
+                new_gallery_item = Gallery(
+                    filename=unique_filename,
+                    title=title,
+                    description=description
+                )
+                
+                db.session.add(new_gallery_item)
+                db.session.commit()
+                
+                flash('Arquivo enviado com sucesso!')
+                return redirect(url_for('galeria'))
+        
+        # Get all gallery items
+        gallery_items = Gallery.query.order_by(Gallery.upload_date.desc()).all()
+        return render_template('galeria.html', gallery_items=gallery_items)
+
+    @app.route('/delete_gallery/<int:id>', methods=['POST'])
+    def delete_gallery(id):
+        gallery_item = Gallery.query.get_or_404(id)
+        
+        # Delete the file
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], gallery_item.filename)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        
+        # Delete from database
+        db.session.delete(gallery_item)
+        db.session.commit()
+        
+        flash('Item removido com sucesso!')
+        return redirect(url_for('galeria'))
 
