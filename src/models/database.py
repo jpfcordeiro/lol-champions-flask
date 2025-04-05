@@ -16,9 +16,11 @@ class Gallery(db.Model):
     filename = db.Column(db.String(255), nullable=False)
     title = db.Column(db.String(150), nullable=False)
     description = db.Column(db.Text)
+    user_name = db.Column(db.String(150), nullable=False)
     upload_date = db.Column(db.DateTime, default=db.func.current_timestamp())
 
-    def __init__(self, filename, title, description):
+    def __init__(self, filename, title, description, user_name):
         self.filename = filename
         self.title = title
         self.description = description
+        self.user_name = user_name

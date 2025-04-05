@@ -1,56 +1,146 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1 class="mb-4">Galeria</h1>
+<div class="container mt-2">
+    <h1 class="mb-2">Galeria</h1>
 
-    <!-- Upload Form -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Enviar Novo Arquivo</h5>
-            <form method="POST" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="file" class="form-label">Arquivo</label>
-                    <input type="file" class="form-control" id="file" name="file" required>
-                </div>
-                <div class="mb-3">
-                    <label for="title" class="form-label">Título</label>
-                    <input type="text" class="form-control" id="title" name="title" required>
-                </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Descrição</label>
-                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Enviar</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Gallery Items -->
-    <div class="row">
-        {% for item in gallery_items %}
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <img src="{{ url_for('static', filename='uploads/' + item.filename) }}" 
-                     class="card-img-top" 
-                     alt="{{ item.title }}"
-                     style="height: 200px; object-fit: cover;">
-                <div class="card-body">
-                    <h5 class="card-title">{{ item.title }}</h5>
-                    <p class="card-text">{{ item.description }}</p>
-                    <p class="card-text">
-                        <small class="text-muted">
-                            Enviado em: {{ item.upload_date.strftime('%d/%m/%Y %H:%M') }}
-                        </small>
-                    </p>
-                    <form method="POST" action="{{ url_for('delete_gallery', id=item.id) }}" 
-                          onsubmit="return confirm('Tem certeza que deseja excluir este item?');">
-                        <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+    <div class="accordion mb-4" id="uploadAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <i class="fas fa-upload me-2"></i> Enviar Nova Imagem
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#uploadAccordion">
+                <div class="accordion-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="user_name" class="form-label">Nome do Usuário</label>
+                                <input type="text" class="form-control" id="user_name" name="user_name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="title" class="form-label">Título</label>
+                                <input type="text" class="form-control" id="title" name="title" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label for="file" class="form-label">Arquivo</label>
+                                <input type="file" class="form-control" id="file" name="file" required accept="image/*">
+                            </div>
+                            <div class="col-md-4 mb-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-upload me-2"></i>Enviar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label for="description" class="form-label">Descrição</label>
+                                <textarea class="form-control" id="description" name="description" rows="2"></textarea>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
-        {% endfor %}
     </div>
+
+    {% if gallery_items %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for item in gallery_items %}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                        <img src="{{ url_for('static', filename='uploads/' + item.filename) }}" 
+                             class="d-block w-100" 
+                             alt="{{ item.title }}"
+                             style="height: 500px; object-fit: cover;">
+                        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                            <h5>{{ item.title }}</h5>
+                            <p>{{ item.description }}</p>
+                            <p class="mb-0">
+                                <small class="text-muted">
+                                    Enviado por: {{ item.user_name }} em {{ item.upload_date.strftime('%d/%m/%Y %H:%M') }}
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Próximo</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-center flex-wrap gap-2">
+                {% for item in gallery_items %}
+                <div class="thumbnail-container" style="width: 150px; height: 100px; overflow: hidden; cursor: pointer;">
+                    <img src="{{ url_for('static', filename='uploads/' + item.filename) }}" 
+                         class="img-thumbnail h-100 w-100" 
+                         alt="{{ item.title }}"
+                         style="object-fit: cover;"
+                         data-bs-target="#mainCarousel"
+                         data-bs-slide-to="{{ loop.index0 }}"
+                         {% if loop.first %}class="active"{% endif %}>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-center flex-wrap gap-2">
+                {% for item in gallery_items %}
+                <form method="POST" action="{{ url_for('delete_gallery', id=item.id) }}" 
+                      onsubmit="return confirm('Tem certeza que deseja excluir este item?');"
+                      class="d-inline">
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash me-1"></i>Excluir {{ item.title }}
+                    </button>
+                </form>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>Nenhuma imagem na galeria ainda. Faça upload de algumas imagens para começar!
+    </div>
+    {% endif %}
 </div>
+
+<style>
+.thumbnail-container:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #f8f9fa;
+    color: #0d6efd;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(0,0,0,.125);
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #0d6efd;
+}
+</style>
 {% endblock %}

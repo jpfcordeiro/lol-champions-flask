@@ -1,44 +1,40 @@
-import os
-from flask import Flask
-from controllers import routes
-from models.database import db
-from dotenv import load_dotenv
+from flask import Flask, render_template, session, request, redirect
 import pymysql
+from controllers import routes
+# Importando o model
+from models.database import db
+# Importando a biblioteca OS (comandos de S.O)
+import os
+from pymysql import connect
 
-# Load environment variables
-load_dotenv()
-
-app = Flask(__name__, template_folder='views')
-
+# Criando a instância do Flask na variável app
+app = Flask(__name__, template_folder='views')  # Representa o nome do arquivo
 routes.init_app(app)
 
-# Database configuration
-DB_NAME = os.getenv('DB_NAME', 'champions')
-DB_USER = os.getenv('DB_USER', 'root')
-DB_PASSWORD = os.getenv('DB_PASSWORD', '')
-DB_HOST = os.getenv('DB_HOST', 'localhost')
+DB_NAME = 'champions'
+app.config['DATABASE_NAME'] = DB_NAME
 
-# Create database if it doesn't exist
-connection = pymysql.connect(
-    host=DB_HOST,
-    user=DB_USER,
-    password=DB_PASSWORD
-)
-try:
-    with connection.cursor() as cursor:
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}")
-    connection.commit()
-finally:
-    connection.close()
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://root@localhost/{DB_NAME}'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+# Secret para as flash messages
+app.config['SECRET_KEY'] = 'thegamessecret'
+app.config['PERMANENT_SESSION_LIFETIME'] = 3600
 
+# Iniciar o servidor
 if __name__ == '__main__':
-    db.init_app(app=app)
-    with app.app_context():
-        db.create_all()
+    # Conecta mysql
+    connection = connect(host='localhost', user='root',
+                         password='', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
     
-    app.run(host='0.0.0.0', port=4000, debug=True)
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(f'CREATE DATABASE IF NOT EXISTS {DB_NAME}')
+    except Exception as e:
+        print(f'Erro ao criar o banco de dados: {e}')
+    finally:
+        connection.close()
+        
+    db.init_app(app=app)
+    with app.test_request_context():
+            db.create_all()
+    app.run(host='0.0.0.0', port=5000, debug=True)
