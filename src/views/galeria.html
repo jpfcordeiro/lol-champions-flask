@@ -7,11 +7,13 @@
     <div class="accordion mb-4" id="uploadAccordion">
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                    aria-expanded="true" aria-controls="collapseOne">
                     <i class="fas fa-upload me-2"></i> Enviar Nova Imagem
                 </button>
             </h2>
-            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#uploadAccordion">
+            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                data-bs-parent="#uploadAccordion">
                 <div class="accordion-body">
                     <form method="POST" enctype="multipart/form-data">
                         <div class="row">
@@ -54,16 +56,15 @@
                 <div class="carousel-inner">
                     {% for item in gallery_items %}
                     <div class="carousel-item {% if loop.first %}active{% endif %}">
-                        <img src="{{ url_for('static', filename='uploads/' + item.filename) }}" 
-                             class="d-block w-100" 
-                             alt="{{ item.title }}"
-                             style="height: 500px; object-fit: cover;">
+                        <img src="{{ url_for('static', filename='uploads/' + item.filename) }}" class="d-block w-100"
+                            alt="{{ item.title }}" style="height: 500px; object-fit: cover;">
                         <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
                             <h5>{{ item.title }}</h5>
                             <p>{{ item.description }}</p>
                             <p class="mb-0">
                                 <small class="text-muted">
-                                    Enviado por: {{ item.user_name }} em {{ item.upload_date.strftime('%d/%m/%Y %H:%M') }}
+                                    Enviado por: {{ item.user_name }} em {{ item.upload_date.strftime('%d/%m/%Y %H:%M')
+                                    }}
                                 </small>
                             </p>
                         </div>
@@ -86,14 +87,12 @@
         <div class="col-12">
             <div class="d-flex justify-content-center flex-wrap gap-2">
                 {% for item in gallery_items %}
-                <div class="thumbnail-container" style="width: 150px; height: 100px; overflow: hidden; cursor: pointer;">
-                    <img src="{{ url_for('static', filename='uploads/' + item.filename) }}" 
-                         class="img-thumbnail h-100 w-100" 
-                         alt="{{ item.title }}"
-                         style="object-fit: cover;"
-                         data-bs-target="#mainCarousel"
-                         data-bs-slide-to="{{ loop.index0 }}"
-                         {% if loop.first %}class="active"{% endif %}>
+                <div class="thumbnail-container"
+                    style="width: 150px; height: 100px; overflow: hidden; cursor: pointer;">
+                    <img src="{{ url_for('static', filename='uploads/' + item.filename) }}"
+                        class="img-thumbnail h-100 w-100" alt="{{ item.title }}" style="object-fit: cover;"
+                        data-bs-target="#mainCarousel" data-bs-slide-to="{{ loop.index0 }}" {% if loop.first
+                        %}class="active" {% endif %}>
                 </div>
                 {% endfor %}
             </div>
@@ -104,9 +103,8 @@
         <div class="col-12">
             <div class="d-flex justify-content-center flex-wrap gap-2">
                 {% for item in gallery_items %}
-                <form method="POST" action="{{ url_for('delete_gallery', id=item.id) }}" 
-                      onsubmit="return confirm('Tem certeza que deseja excluir este item?');"
-                      class="d-inline">
+                <form method="POST" action="{{ url_for('delete_gallery', id=item.id) }}"
+                    onsubmit="return confirm('Tem certeza que deseja excluir este item?');" class="d-inline">
                     <button type="submit" class="btn btn-danger btn-sm">
                         <i class="fas fa-trash me-1"></i>Excluir {{ item.title }}
                     </button>
@@ -117,30 +115,31 @@
     </div>
     {% else %}
     <div class="alert alert-info">
-        <i class="fas fa-info-circle me-2"></i>Nenhuma imagem na galeria ainda. Faça upload de algumas imagens para começar!
+        <i class="fas fa-info-circle me-2"></i>Nenhuma imagem na galeria ainda. Faça upload de algumas imagens para
+        começar!
     </div>
     {% endif %}
 </div>
 
 <style>
-.thumbnail-container:hover {
-    transform: scale(1.05);
-    transition: transform 0.2s;
-}
+    .thumbnail-container:hover {
+        transform: scale(1.05);
+        transition: transform 0.2s;
+    }
 
-.accordion-button:not(.collapsed) {
-    background-color: #f8f9fa;
-    color: #0d6efd;
-}
+    .accordion-button:not(.collapsed) {
+        background-color: #f8f9fa;
+        color: #0d6efd;
+    }
 
-.accordion-button:focus {
-    box-shadow: none;
-    border-color: rgba(0,0,0,.125);
-}
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: rgba(0, 0, 0, .125);
+    }
 
-.form-control:focus {
-    box-shadow: none;
-    border-color: #0d6efd;
-}
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #0d6efd;
+    }
 </style>
 {% endblock %}

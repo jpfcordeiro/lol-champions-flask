@@ -14,11 +14,10 @@ routes.init_app(app)
 DB_NAME = 'champions'
 app.config['DATABASE_NAME'] = DB_NAME
 
+app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'src/static/uploads')
+
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://root@localhost/{DB_NAME}'
 
-# Secret para as flash messages
-app.config['SECRET_KEY'] = 'thegamessecret'
-app.config['PERMANENT_SESSION_LIFETIME'] = 3600
 
 # Iniciar o servidor
 if __name__ == '__main__':
