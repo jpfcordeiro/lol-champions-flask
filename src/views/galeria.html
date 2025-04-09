@@ -2,7 +2,13 @@
 
 {% block content %}
 <div class="container mt-2">
-    <h1 class="mb-2">Galeria</h1>
+    <div>
+        <div
+          class="bg-image"
+          style="background-image: url('{{ url_for('static', filename='images/back_gallery.jpg') }}'); background-size: cover; background-position: center; opacity: 0.4; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: blur(5px);"
+        ></div>
+      </div>
+    <h3 class="mb-2">Galeria</h3>
 
     <div class="accordion mb-4" id="uploadAccordion">
         <div class="accordion-item">
@@ -54,19 +60,25 @@
         <div class="col-12">
             <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
-                    {% for item in gallery_items %}
+                    {% for item in gallery_items|batch(2) %}
                     <div class="carousel-item {% if loop.first %}active{% endif %}">
-                        <img src="{{ url_for('static', filename='uploads/' + item.filename) }}" class="d-block w-100"
-                            alt="{{ item.title }}" style="height: 500px; object-fit: cover;">
-                        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
-                            <h5>{{ item.title }}</h5>
-                            <p>{{ item.description }}</p>
-                            <p class="mb-0">
-                                <small class="text-muted">
-                                    Enviado por: {{ item.user_name }} em {{ item.upload_date.strftime('%d/%m/%Y %H:%M')
-                                    }}
-                                </small>
-                            </p>
+                        <div class="row">
+                            {% for image in item %}
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-center">
+                                    <img src="{{ url_for('static', filename='uploads/' + image.filename) }}"
+                                        class="img-fluid" alt="{{ image.title }}" 
+                                        style="height: 150px; width: 150px; object-fit: cover;">
+                                </div>
+                                <div class="text-center mt-2 bg-dark bg-opacity-50 rounded p-2 text-white">
+                                    <h5>{{ image.title }}</h5>
+                                    <p class="mb-0">{{ image.description }}</p>
+                                    <small>
+                                        Enviado por: {{ image.user_name }} em {{ image.upload_date.strftime('%d/%m/%Y %H:%M') }}
+                                    </small>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                     {% endfor %}
@@ -88,10 +100,11 @@
             <div class="d-flex justify-content-center flex-wrap gap-2">
                 {% for item in gallery_items %}
                 <div class="thumbnail-container"
-                    style="width: 150px; height: 100px; overflow: hidden; cursor: pointer;">
+                    style="width: 60px; height: 45px; overflow: hidden; cursor: pointer;">
                     <img src="{{ url_for('static', filename='uploads/' + item.filename) }}"
-                        class="img-thumbnail h-100 w-100" alt="{{ item.title }}" style="object-fit: cover;"
-                        data-bs-target="#mainCarousel" data-bs-slide-to="{{ loop.index0 }}" {% if loop.first
+                        class="img-thumbnail h-100 w-100" alt="{{ item.title }}" 
+                        style="height: 45px; width: 60px; object-fit: cover;"
+                        data-bs-target="#mainCarousel" data-bs-slide-to="{{ loop.index0 // 2 }}" {% if loop.first
                         %}class="active" {% endif %}>
                 </div>
                 {% endfor %}
@@ -99,20 +112,6 @@
         </div>
     </div>
 
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-center flex-wrap gap-2">
-                {% for item in gallery_items %}
-                <form method="POST" action="{{ url_for('delete_gallery', id=item.id) }}"
-                    onsubmit="return confirm('Tem certeza que deseja excluir este item?');" class="d-inline">
-                    <button type="submit" class="btn btn-danger btn-sm">
-                        <i class="fas fa-trash me-1"></i>Excluir {{ item.title }}
-                    </button>
-                </form>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
     {% else %}
     <div class="alert alert-info">
         <i class="fas fa-info-circle me-2"></i>Nenhuma imagem na galeria ainda. Faça upload de algumas imagens para
@@ -140,6 +139,47 @@
     .form-control:focus {
         box-shadow: none;
         border-color: #0d6efd;
+    }
+
+    .carousel-item {
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .carousel-item .col-md-6 {
+        padding: 3px;
+    }
+
+    .carousel-item img {
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .carousel-item .text-center {
+        padding: 3px;
+        font-size: 0.8rem;
+    }
+
+    .carousel-item h5 {
+        font-size: 0.9rem;
+        margin-bottom: 0.1rem;
+    }
+
+    .carousel-item small {
+        font-size: 0.6rem;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        background-color: black;
+        border-radius: 50%;
+        padding: 15px;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 5%;
     }
 </style>
 {% endblock %}

@@ -247,6 +247,8 @@ def init_app(app):
                 filename = secure_filename(file.filename)
                 unique_filename = f"{uuid.uuid4().hex}_{filename}"
                 
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                
                 # Save the file
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
                 file.save(file_path)
@@ -254,11 +256,17 @@ def init_app(app):
                 # Save to database
                 title = request.form.get('title', '')
                 description = request.form.get('description', '')
+                user_name = request.form.get('user_name', '')
+                
+                if not user_name:
+                    flash('Por favor, informe o nome do usuário')
+                    return redirect(request.url)
                 
                 new_gallery_item = Gallery(
                     filename=unique_filename,
                     title=title,
-                    description=description
+                    description=description,
+                    user_name=user_name
                 )
                 
                 db.session.add(new_gallery_item)
