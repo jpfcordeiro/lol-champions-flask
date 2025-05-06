@@ -16,9 +16,3 @@ A API utiliza **Flask** para criação das rotas, **JSON** para manipulação do
 ## New Features
 - Listagem dos modos de Jogos Existentes
 - Listagem dos itens
-
-## Preciso ajustar o ' no nome dos campeões
-- K'Sante
-- Kha'Zix
-- Kog'Maw
-- Etc...
